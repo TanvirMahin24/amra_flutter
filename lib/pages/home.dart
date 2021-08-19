@@ -80,7 +80,13 @@ class _HomeState extends State<Home> {
   }
 
   tapHandeler(int pageIndex) {
-    pageController.jumpToPage(pageIndex);
+    pageController.animateToPage(
+      pageIndex,
+      duration: Duration(
+        milliseconds: 400,
+      ),
+      curve: Curves.easeInOut,
+    );
   }
 
   Scaffold buildAuthScreen() {
