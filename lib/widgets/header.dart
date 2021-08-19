@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
-AppBar header(context, {bool isAppTitle = true}) {
+AppBar header(context, {bool isAppTitle = true, String title = ''}) {
   return AppBar(
     title: Text(
-      !isAppTitle ? 'Profile' : 'Amra',
+      isAppTitle
+          ? 'Amra'
+          : title != ''
+              ? title
+              : 'Profile',
       style: TextStyle(
         fontFamily: 'Signatra',
         color: Colors.white,

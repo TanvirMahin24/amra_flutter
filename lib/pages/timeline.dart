@@ -1,3 +1,5 @@
+import 'package:amra/widgets/progress.dart';
+
 import '../widgets/header.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +14,7 @@ class _TimelineState extends State<Timeline> {
     return Scaffold(
       appBar: header(context),
       body: Container(
-        child: Text('timeline'),
+        child: linearProgress(),
       ),
     );
   }

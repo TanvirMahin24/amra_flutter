@@ -1,3 +1,5 @@
+import 'package:amra/pages/create_account.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -8,6 +10,8 @@ import './timeline.dart';
 import './upload.dart';
 
 final GoogleSignIn googleSignin = GoogleSignIn();
+final usersRef = FirebaseFirestore.instance.collection('users');
+final timestamp = DateTime.now();
 
 class Home extends StatefulWidget {
   @override
@@ -27,7 +31,7 @@ class _HomeState extends State<Home> {
     googleSignin.onCurrentUserChanged.listen((account) {
       if (account != null) {
         //DO SOMETHING
-        print(account);
+        createUserInFirestore();
         //UPDATE STATE
         setState(() {
           isAuth = true;
@@ -40,11 +44,12 @@ class _HomeState extends State<Home> {
     }, onError: (err) {
       print('ERROR SIGINING IN : $err');
     });
+
     //LOGIN
     googleSignin.signInSilently(suppressErrors: false).then((account) {
       if (account != null) {
         //DO SOMETHING
-        print(account);
+        createUserInFirestore();
         //UPDATE STATE
         setState(() {
           isAuth = true;
@@ -57,6 +62,27 @@ class _HomeState extends State<Home> {
     }).catchError((err) {
       print('ERROR LOGIN : $err');
     });
+  }
+
+  createUserInFirestore() async {
+    final user = googleSignin.currentUser;
+    final doc = await usersRef.doc(user!.id).get();
+
+    if (!doc.exists) {
+      final username = await Navigator.push(
+          context, MaterialPageRoute(builder: (context) => CreateAccount()));
+
+      //CREATE USER DOC
+      usersRef.doc(user.id).set({
+        "id": user.id,
+        "username": username,
+        "photoUrl": user.photoUrl,
+        "email": user.email,
+        "displayName": user.displayName,
+        "bio": "",
+        "timestamp": timestamp
+      });
+    }
   }
 
   @override
@@ -96,7 +122,11 @@ class _HomeState extends State<Home> {
           Timeline(),
           ActivityFeed(),
           Upload(),
-          Search(),
+          // Search(),
+          FlatButton(
+            onPressed: logout,
+            child: Text('Logout'),
+          ),
           Profile(),
         ],
         controller: pageController,
