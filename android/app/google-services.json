@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "863437125460-ln0biqnes3t5gk6qf05n5trmn0qbh7qj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tanvirmahin24.amra",
+            "certificate_hash": "cac29aef122d8dd207e2987972802b1958445ac1"
+          }
+        },
+        {
           "client_id": "863437125460-ksvifqabt37qj478c6eje9abja6ku4gr.apps.googleusercontent.com",
           "client_type": 3
         }

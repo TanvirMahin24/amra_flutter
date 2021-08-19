@@ -1,5 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import './activity_feed.dart';
+import './profile.dart';
+import './search.dart';
+import './timeline.dart';
+import './upload.dart';
+
+final GoogleSignIn googleSignin = GoogleSignIn();
 
 class Home extends StatefulWidget {
   @override
@@ -8,8 +16,121 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   bool isAuth = false;
-  Widget buildAuthScreen() {
-    return Text('Auth');
+  late PageController pageController;
+  int pageIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    pageController = PageController();
+    //SIGNING IN
+    googleSignin.onCurrentUserChanged.listen((account) {
+      if (account != null) {
+        //DO SOMETHING
+        print(account);
+        //UPDATE STATE
+        setState(() {
+          isAuth = true;
+        });
+      } else {
+        setState(() {
+          isAuth = false;
+        });
+      }
+    }, onError: (err) {
+      print('ERROR SIGINING IN : $err');
+    });
+    //LOGIN
+    googleSignin.signInSilently(suppressErrors: false).then((account) {
+      if (account != null) {
+        //DO SOMETHING
+        print(account);
+        //UPDATE STATE
+        setState(() {
+          isAuth = true;
+        });
+      } else {
+        setState(() {
+          isAuth = false;
+        });
+      }
+    }).catchError((err) {
+      print('ERROR LOGIN : $err');
+    });
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+    pageController.dispose();
+  }
+
+  login() {
+    googleSignin.signIn();
+  }
+
+  logout() {
+    googleSignin.signOut();
+  }
+
+  onPageChanged(int pageIndex) {
+    setState(() {
+      this.pageIndex = pageIndex;
+    });
+  }
+
+  tapHandeler(int pageIndex) {
+    pageController.jumpToPage(pageIndex);
+  }
+
+  Scaffold buildAuthScreen() {
+    return Scaffold(
+      body: PageView(
+        children: [
+          Timeline(),
+          ActivityFeed(),
+          Upload(),
+          Search(),
+          Profile(),
+        ],
+        controller: pageController,
+        onPageChanged: onPageChanged,
+        physics: NeverScrollableScrollPhysics(),
+      ),
+      bottomNavigationBar: CupertinoTabBar(
+        currentIndex: pageIndex,
+        onTap: tapHandeler,
+        activeColor: Theme.of(context).primaryColor,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.whatshot,
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.notifications_active,
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.photo_camera,
+              size: 50,
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.search,
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.account_circle,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildUnAuthScreen() {
@@ -34,7 +155,7 @@ class _HomeState extends State<Home> {
               'Amra',
               style: TextStyle(
                 fontFamily: 'Signatra',
-                color: Colors.red[300],
+                color: Theme.of(context).primaryColor,
                 fontSize: 90,
                 shadows: [
                   Shadow(
@@ -50,7 +171,7 @@ class _HomeState extends State<Home> {
               height: 10,
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: login,
               child: Container(
                 width: 220,
                 height: 50,
