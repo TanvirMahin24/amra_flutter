@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "863437125460",
+    "project_id": "amra-bf83d",
+    "storage_bucket": "amra-bf83d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:863437125460:android:3a4834672fe6c2edf93ac1",
+        "android_client_info": {
+          "package_name": "com.tanvirmahin24.amra"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "863437125460-ksvifqabt37qj478c6eje9abja6ku4gr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANYEEB9jQW-TVesfvO3HazxPgucubUCx0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "863437125460-ksvifqabt37qj478c6eje9abja6ku4gr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "863437125460-sdq963dv9fjagbdn7cd4fdltq20306dg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tanvirmahin24.amra"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
