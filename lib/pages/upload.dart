@@ -1,12 +1,13 @@
 import 'dart:io';
 
 import 'package:amra/models/user.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 
 class Upload extends StatefulWidget {
-  late final User currentUser;
+  late final User? currentUser;
   Upload({required this.currentUser});
   @override
   _UploadState createState() => _UploadState();
@@ -106,26 +107,96 @@ class _UploadState extends State<Upload> {
           ),
         ),
         centerTitle: true,
-        title: Text(
-          'Post Details',
-          style: TextStyle(
-            fontFamily: 'Signatra',
-            color: Colors.black,
-            fontSize: 30,
-          ),
-        ),
+        // title: Text(
+        //   'Post Details',
+        //   style: TextStyle(
+        //     fontFamily: 'Signatra',
+        //     color: Colors.black,
+        //     fontSize: 30,
+        //   ),
+        // ),
         actions: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
                 primary: Colors.transparent, shadowColor: Colors.transparent),
             onPressed: () {},
             child: Text(
-              'Post',
+              'Post Now',
               style: TextStyle(
                 fontFamily: 'Signatra',
-                color: Colors.black,
+                color: Colors.red[300],
                 fontSize: 30,
               ),
+            ),
+          ),
+        ],
+      ),
+      body: ListView(
+        children: [
+          SizedBox(
+            height: 20,
+          ),
+          Container(
+            height: 220,
+            width: MediaQuery.of(context).size.width * .8,
+            child: Center(
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: FileImage(File(imageFile!.path)),
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          ListTile(
+            leading: CircleAvatar(
+              backgroundImage: CachedNetworkImageProvider(
+                widget.currentUser!.photoUrl,
+              ),
+            ),
+            title: Container(
+              width: 250,
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: "Caption for your post....",
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(
+              Icons.pin_drop_outlined,
+              color: Colors.red[200],
+              size: 30,
+            ),
+            title: Container(
+              width: 250,
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: "Location of the photo....",
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+          ),
+          Container(
+            width: 200,
+            height: 100,
+            alignment: Alignment.center,
+            child: ElevatedButton.icon(
+              onPressed: () {},
+              icon: Icon(Icons.my_location),
+              label: Text('Use current location'),
             ),
           ),
         ],

@@ -13,7 +13,8 @@ import './upload.dart';
 final GoogleSignIn googleSignin = GoogleSignIn();
 final usersRef = FirebaseFirestore.instance.collection('users');
 final timestamp = DateTime.now();
-late User? currentUser;
+
+User? currentUser;
 
 class Home extends StatefulWidget {
   @override
@@ -50,6 +51,7 @@ class _HomeState extends State<Home> {
     //LOGIN
     googleSignin.signInSilently(suppressErrors: false).then((account) {
       if (account != null) {
+        createUserInFirestore();
         //UPDATE STATE
         setState(() {
           isAuth = true;
