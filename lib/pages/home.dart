@@ -1,6 +1,7 @@
 import 'package:amra/models/user.dart';
 import 'package:amra/pages/create_account.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -12,6 +13,9 @@ import './upload.dart';
 
 final GoogleSignIn googleSignin = GoogleSignIn();
 final usersRef = FirebaseFirestore.instance.collection('users');
+final postDB = FirebaseFirestore.instance.collection('posts');
+final CollectionReference<Map<String, dynamic>> postsRef = postDB;
+final Reference storageRef = FirebaseStorage.instance.ref();
 final timestamp = DateTime.now();
 
 User? currentUser;
