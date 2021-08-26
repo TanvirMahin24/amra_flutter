@@ -6,6 +6,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as Im;
@@ -119,7 +121,7 @@ class _UploadState extends State<Upload> {
     UploadTask uploadTask =
         storageRef.child('post_$postId.jpg').putFile(imgFile);
     TaskSnapshot snapshot = await uploadTask.snapshot;
-    String downloadUrl = snapshot.ref.getDownloadURL() as String;
+    String downloadUrl = snapshot.ref.getDownloadURL().toString();
     return downloadUrl;
   }
 
@@ -127,11 +129,13 @@ class _UploadState extends State<Upload> {
       {required String mediaUrl,
       required String location,
       required String description}) async {
+    print(widget.currentUser!.id);
     postsRef
         .doc(widget.currentUser!.id)
         .collection('userPosts')
         .doc(postId)
         .set({
+      "userId": widget.currentUser!.id,
       "postId": postId,
       "ownerId": widget.currentUser!.id,
       "username": widget.currentUser!.username,
@@ -265,7 +269,7 @@ class _UploadState extends State<Upload> {
             height: 100,
             alignment: Alignment.center,
             child: ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: getCurrentDeviceLocation,
               icon: Icon(Icons.my_location),
               label: Text('Use current location'),
             ),
@@ -273,6 +277,48 @@ class _UploadState extends State<Upload> {
         ],
       ),
     );
+  }
+
+  getCurrentDeviceLocation() async {
+    //CHECK PERMISSION
+    late bool serviceEnabled;
+    late LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      print('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return print('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      print(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    Position pos = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(pos.latitude, pos.longitude);
+    Placemark placemark = placemarks[0];
+    String locationFinal = "${placemark.locality}, ${placemark.country}";
+    locationController.text = locationFinal;
   }
 
   @override

@@ -133,11 +133,7 @@ class _HomeState extends State<Home> {
           ActivityFeed(),
           Upload(currentUser: currentUser),
           Search(),
-          // FlatButton(
-          //   onPressed: logout,
-          //   child: Text('Logout'),
-          // ),
-          Profile(),
+          Profile(profileId: currentUser!.id),
         ],
         controller: pageController,
         onPageChanged: onPageChanged,
