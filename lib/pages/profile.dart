@@ -3,6 +3,7 @@ import 'package:amra/pages/edit_profile.dart';
 import 'package:amra/pages/home.dart';
 import 'package:amra/widgets/header.dart';
 import 'package:amra/widgets/post.dart';
+import 'package:amra/widgets/post_tile.dart';
 import 'package:amra/widgets/progress.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,11 +23,13 @@ class _ProfileState extends State<Profile> {
   bool isLoading = false;
   int postCount = 0;
   List<Post> posts = [];
+  bool isListPost = false;
 
   @override
   initState() {
     super.initState();
     getProfilePosts();
+    //print(currentUserId);
   }
 
   getProfilePosts() async {
@@ -171,10 +174,90 @@ class _ProfileState extends State<Profile> {
   buildProfilePosts() {
     if (isLoading) {
       return circularProgress();
+    } else if (posts.isEmpty) {
+      return Container(
+          padding: EdgeInsets.only(top: 80),
+          child: Column(
+            children: [
+              Center(
+                child: Icon(
+                  Icons.yard_outlined,
+                  color: Colors.red[100],
+                  size: 60,
+                ),
+              ),
+              Center(
+                child: Text(
+                  "No Posts Found",
+                  style: TextStyle(
+                    color: Colors.red[100],
+                    fontFamily: 'Signatra',
+                    fontSize: 48,
+                  ),
+                ),
+              ),
+              Center(
+                child: Text(
+                  "Try sharing your day",
+                  style: TextStyle(
+                    color: Colors.red[100],
+                    fontFamily: 'Signatra',
+                    fontSize: 28,
+                  ),
+                ),
+              ),
+            ],
+          ));
+    } else if (isListPost) {
+      return Column(
+        children: posts,
+      );
     }
-    return Column(
-      children: posts,
+
+    List<GridTile> gridTiles = [];
+    posts.forEach((element) {
+      gridTiles.add(GridTile(
+        child: PostTile(element),
+      ));
+    });
+
+    return GridView.count(
+      crossAxisCount: 3,
+      childAspectRatio: 1,
+      mainAxisSpacing: 1.5,
+      crossAxisSpacing: 1.5,
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      children: gridTiles,
     );
+  }
+
+  buildPostViewToggle() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        IconButton(
+          onPressed: () => setToogleFunc('grid'),
+          icon: Icon(
+            Icons.grid_on,
+            color: !isListPost ? Colors.red[300] : Colors.grey,
+          ),
+        ),
+        IconButton(
+          onPressed: () => setToogleFunc('list'),
+          icon: Icon(
+            Icons.list,
+            color: isListPost ? Colors.red[300] : Colors.grey,
+          ),
+        ),
+      ],
+    );
+  }
+
+  setToogleFunc(String type) {
+    setState(() {
+      isListPost = type == "list" ? true : false;
+    });
   }
 
   @override
@@ -184,6 +267,10 @@ class _ProfileState extends State<Profile> {
       body: ListView(
         children: [
           buildProfileHeader(),
+          Divider(
+            height: 0,
+          ),
+          buildPostViewToggle(),
           Divider(
             height: 0,
           ),

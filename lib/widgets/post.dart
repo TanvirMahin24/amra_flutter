@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:amra/models/user.dart';
 import 'package:amra/pages/home.dart';
+import 'package:amra/widgets/custom_image.dart';
 import 'package:amra/widgets/progress.dart';
+import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -69,9 +73,12 @@ class _PostState extends State<Post> {
   late final String location;
   late final String description;
   late final String mediaUrl;
+  late bool isLikedUser;
+  late final String currentUserId = currentUser!.id;
 
   late Map likes;
   late int likeCount;
+  bool showHeart = false;
 
   _PostState(
       {required this.postId,
@@ -116,13 +123,83 @@ class _PostState extends State<Post> {
         });
   }
 
+  likeFunc() async {
+    bool isLiked = likes[currentUserId] == true;
+
+    if (isLiked) {
+      await postsRef
+          .doc(ownerId)
+          .collection('userPosts')
+          .doc(postId)
+          .update({'likes.$currentUserId': false});
+
+      setState(() {
+        likeCount--;
+        isLikedUser = false;
+        likes[currentUserId] = false;
+      });
+    } else if (!isLiked) {
+      await postsRef
+          .doc(ownerId)
+          .collection('userPosts')
+          .doc(postId)
+          .update({'likes.$currentUserId': true});
+
+      setState(() {
+        likeCount++;
+        isLikedUser = true;
+        likes[currentUserId] = true;
+        showHeart = true;
+      });
+      Timer(Duration(milliseconds: 500), () {
+        setState(() {
+          showHeart = false;
+        });
+      });
+    }
+  }
+
   buildPostImage() {
     return GestureDetector(
-      onDoubleTap: () {},
+      onDoubleTap: likeFunc,
       child: Stack(
         alignment: Alignment.center,
         children: [
-          Image.network(mediaUrl),
+          cachedNetworkImage(mediaUrl),
+          showHeart
+              ? Animator(
+                  builder: (BuildContext context, AnimatorState animate, a) =>
+                      Transform.scale(
+                    scale: animate.value,
+                    child: Icon(
+                      Icons.favorite,
+                      size: 90,
+                      color: Colors.white,
+                    ),
+                  ),
+                  duration: Duration(milliseconds: 500),
+                  tween: Tween(begin: .8, end: 1.4),
+                  curve: Curves.elasticOut,
+                  cycles: 0,
+                )
+              : Text(""),
+          showHeart
+              ? Animator(
+                  builder: (BuildContext context, AnimatorState animate, a) =>
+                      Transform.scale(
+                    scale: animate.value,
+                    child: Icon(
+                      Icons.favorite,
+                      size: 80,
+                      color: Colors.red[300],
+                    ),
+                  ),
+                  duration: Duration(milliseconds: 500),
+                  tween: Tween(begin: .8, end: 1.4),
+                  curve: Curves.elasticOut,
+                  cycles: 0,
+                )
+              : Text(""),
         ],
       ),
     );
@@ -139,11 +216,11 @@ class _PostState extends State<Post> {
               width: 20,
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: likeFunc,
               child: Icon(
-                Icons.favorite_border,
+                isLikedUser ? Icons.favorite : Icons.favorite_border,
                 size: 28,
-                color: Colors.red[200],
+                color: Colors.red[300],
               ),
             ),
             SizedBox(
@@ -201,6 +278,7 @@ class _PostState extends State<Post> {
 
   @override
   Widget build(BuildContext context) {
+    isLikedUser = (likes[currentUserId] == true);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
