@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-AppBar header(context, {bool isAppTitle = true, String title = ''}) {
+AppBar header(context,
+    {bool isAppTitle = true, String title = '', bool back = false}) {
   return AppBar(
-    automaticallyImplyLeading: false,
+    automaticallyImplyLeading: true,
     title: Text(
       isAppTitle
           ? 'Amra'

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:amra/models/user.dart';
+import 'package:amra/pages/comments.dart';
 import 'package:amra/pages/home.dart';
 import 'package:amra/widgets/custom_image.dart';
 import 'package:amra/widgets/progress.dart';
@@ -227,7 +228,12 @@ class _PostState extends State<Post> {
               width: 20,
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () => showComments(
+                context,
+                postId: postId,
+                ownerId: ownerId,
+                mediaUrl: mediaUrl,
+              ),
               child: Icon(
                 Icons.chat,
                 size: 28,
@@ -288,4 +294,14 @@ class _PostState extends State<Post> {
       ],
     );
   }
+}
+
+showComments(BuildContext context,
+    {required String postId,
+    required String ownerId,
+    required String mediaUrl}) {
+  Navigator.push(context, MaterialPageRoute(builder: (context) {
+    return Comments(
+        postId: postId, postOwnerId: ownerId, postMediaUrl: mediaUrl);
+  }));
 }

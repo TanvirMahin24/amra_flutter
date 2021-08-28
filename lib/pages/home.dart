@@ -13,6 +13,7 @@ import './upload.dart';
 
 final GoogleSignIn googleSignin = GoogleSignIn();
 final usersRef = FirebaseFirestore.instance.collection('users');
+final commentsRef = FirebaseFirestore.instance.collection('comments');
 final postDB = FirebaseFirestore.instance.collection('posts');
 final CollectionReference<Map<String, dynamic>> postsRef = postDB;
 final Reference storageRef = FirebaseStorage.instance.ref();
