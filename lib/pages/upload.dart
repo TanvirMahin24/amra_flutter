@@ -117,12 +117,16 @@ class _UploadState extends State<Upload> {
     });
   }
 
-  Future<String> uploadImage(imgFile) async {
-    UploadTask uploadTask =
-        storageRef.child('post_$postId.jpg').putFile(imgFile);
-    TaskSnapshot snapshot = await uploadTask.snapshot;
-    String downloadUrl = snapshot.ref.getDownloadURL().toString();
-    return downloadUrl;
+  uploadImage(imgFile) async {
+    //UploadTask uploadTask =
+    //    storageRef.child('post_$postId.jpg').putFile(imgFile);
+    //TaskSnapshot snapshot = await uploadTask.snapshot;
+    //String downloadUrl = await snapshot.ref.getDownloadURL().toString();
+    Reference ref = storageRef.child('post_$postId.jpg');
+    TaskSnapshot uploadTask = await ref.putFile(imgFile);
+    var downUrl = uploadTask.ref.getDownloadURL();
+
+    return downUrl;
   }
 
   createPostInFirestore(
