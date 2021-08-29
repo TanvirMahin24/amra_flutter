@@ -12,14 +12,19 @@ class ActivityFeed extends StatefulWidget {
 }
 
 class _ActivityFeedState extends State<ActivityFeed> {
-  getActivityFeedData() async {
+  Future getActivityFeedData() async {
     QuerySnapshot snapshot = await activityFeedRef
         .doc(currentUser!.id)
         .collection('feedItems')
         .orderBy('timestamp', descending: true)
         .limit(50)
         .get();
-    return snapshot.docs;
+
+    List<ActivityFeedItem> feeds = [];
+    feeds = snapshot.docs.map((element) {
+      return ActivityFeedItem.fromDocument(element);
+    }).toList();
+    return feeds;
   }
 
   @override
@@ -36,7 +41,9 @@ class _ActivityFeedState extends State<ActivityFeed> {
             if (!snapshot.hasData) {
               return circularProgress();
             }
-            return Text('feed');
+            return ListView(
+              children: snapshot.data as List<ActivityFeedItem>,
+            );
           },
           future: getActivityFeedData(),
         ),
