@@ -54,6 +54,7 @@ class CommentsState extends State<Comments> {
   }
 
   addComment() async {
+    //Comment add to firestore
     await commentsRef.doc(postId).collection('comments').add({
       "username": currentUser!.username,
       "comment": commentController.text,
@@ -62,6 +63,21 @@ class CommentsState extends State<Comments> {
       "userId": currentUser!.id
     });
 
+    //Comment notification add to firestore
+    if (postOwnerId != currentUser!.id) {
+      activityFeedRef.doc(postOwnerId).collection('feedItems').add({
+        "type": "comment",
+        "text": commentController.text,
+        "username": currentUser!.username,
+        "userId": currentUser!.id,
+        "userProfileImg": currentUser!.photoUrl,
+        "postId": postId,
+        "mediaUrl": postMediaUrl,
+        "timestamp": DateTime.now(),
+      });
+    }
+
+    //Clear input
     commentController.clear();
   }
 

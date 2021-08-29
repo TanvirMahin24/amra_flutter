@@ -161,28 +161,32 @@ class _PostState extends State<Post> {
   }
 
   addLikeToActivityFeed() {
-    activityFeedRef.doc(ownerId).collection('feedItems').doc(postId).set({
-      "type": "like",
-      "username": currentUser!.username,
-      "userId": currentUser!.id,
-      "userProfileImg": currentUser!.photoUrl,
-      "postId": postId,
-      "mediaUrl": mediaUrl,
-      "timestamp": DateTime.now(),
-    });
+    if (ownerId != currentUserId) {
+      activityFeedRef.doc(ownerId).collection('feedItems').doc(postId).set({
+        "type": "like",
+        "username": currentUser!.username,
+        "userId": currentUser!.id,
+        "userProfileImg": currentUser!.photoUrl,
+        "postId": postId,
+        "mediaUrl": mediaUrl,
+        "timestamp": DateTime.now(),
+      });
+    }
   }
 
   removeLikeToActivityFeed() {
-    activityFeedRef
-        .doc(ownerId)
-        .collection('feedItems')
-        .doc(postId)
-        .get()
-        .then((doc) {
-      if (doc.exists) {
-        doc.reference.delete();
-      }
-    });
+    if (ownerId != currentUserId) {
+      activityFeedRef
+          .doc(ownerId)
+          .collection('feedItems')
+          .doc(postId)
+          .get()
+          .then((doc) {
+        if (doc.exists) {
+          doc.reference.delete();
+        }
+      });
+    }
   }
 
   buildPostImage() {
