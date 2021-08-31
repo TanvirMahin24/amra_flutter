@@ -117,10 +117,12 @@ class _PostState extends State<Post> {
               ),
             ),
             subtitle: Text(location),
-            trailing: IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.more_vert),
-            ),
+            trailing: currentUserId == ownerId
+                ? IconButton(
+                    onPressed: () => deletePost(context),
+                    icon: Icon(Icons.more_vert),
+                  )
+                : Text(""),
           );
         });
   }
@@ -303,6 +305,66 @@ class _PostState extends State<Post> {
         Divider()
       ],
     );
+  }
+
+  deletePostFunc() async {
+    postsRef.doc(postId).get().then((value) {
+      if (value.exists) {
+        value.reference.delete();
+      }
+    });
+
+    //DELETE IMG
+    storageRef.child("post_$postId.jpg").delete();
+
+    //DELETE activities
+    QuerySnapshot activityFeedSnapshot = await activityFeedRef
+        .doc(ownerId)
+        .collection('feedItems')
+        .where('postId', isEqualTo: postId)
+        .get();
+    activityFeedSnapshot.docs.forEach((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+
+    //DELETE ALL COMMENTS
+    QuerySnapshot commentSnapshot =
+        await commentsRef.doc(postId).collection('comments').get();
+    commentSnapshot.docs.forEach((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+  }
+
+  deletePost(BuildContext parentContext) {
+    return showDialog(
+        context: parentContext,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text("Remove this post?"),
+            children: [
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context);
+                  deletePostFunc();
+                },
+                child: Text(
+                  "Delete",
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+              SimpleDialogOption(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  "Cancel",
+                ),
+              ),
+            ],
+          );
+        });
   }
 
   @override

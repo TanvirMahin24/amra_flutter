@@ -146,3 +146,56 @@ class UserResult extends StatelessWidget {
     );
   }
 }
+
+class UserAvatar extends StatelessWidget {
+  late final User user;
+
+  UserAvatar(this.user);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 100,
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: () => showProfile(context, profileId: user.id),
+            child: Container(
+              alignment: Alignment.topCenter,
+              padding: EdgeInsets.all(5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 33,
+                        backgroundColor: Colors.red[200],
+                      ),
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.red[200],
+                        backgroundImage:
+                            CachedNetworkImageProvider(user.photoUrl),
+                      ),
+                    ],
+                  ),
+                  Center(
+                    child: Text(
+                      user.displayName,
+                      style: TextStyle(
+                        fontSize: 14,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

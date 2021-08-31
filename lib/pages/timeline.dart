@@ -1,4 +1,6 @@
+import 'package:amra/models/user.dart';
 import 'package:amra/pages/home.dart';
+import 'package:amra/pages/search.dart';
 import 'package:amra/widgets/post.dart';
 import 'package:amra/widgets/progress.dart';
 
@@ -12,12 +14,16 @@ class Timeline extends StatefulWidget {
 
 class _TimelineState extends State<Timeline> {
   bool isLoading = false;
+  bool isLoadingUser = false;
   List<Post> posts = [];
+
+  List<UserAvatar> users = [];
 
   @override
   initState() {
     super.initState();
     getProfilePosts();
+    getUsers();
   }
 
   getProfilePosts() async {
@@ -28,6 +34,20 @@ class _TimelineState extends State<Timeline> {
     setState(() {
       isLoading = false;
       posts = snapshot.docs.map((doc) => Post.fromDocument(doc)).toList();
+    });
+  }
+
+  getUsers() async {
+    setState(() {
+      isLoadingUser = true;
+    });
+    var snapshot =
+        await usersRef.orderBy('timestamp', descending: true).limit(10).get();
+    setState(() {
+      isLoadingUser = false;
+      users = snapshot.docs
+          .map((doc) => UserAvatar(User.fromDocument(doc)))
+          .toList();
     });
   }
 
@@ -69,8 +89,17 @@ class _TimelineState extends State<Timeline> {
             ],
           ));
     } else {
-      return Column(
-        children: posts,
+      return ListView(
+        children: [
+          Container(
+            alignment: Alignment.topCenter,
+            child: Row(
+              children: [...users],
+            ),
+          ),
+          Divider(),
+          ...posts,
+        ],
       );
     }
   }
@@ -80,7 +109,10 @@ class _TimelineState extends State<Timeline> {
     return Scaffold(
       appBar: header(context),
       body: Container(
-        child: buildProfilePosts(),
+        child: RefreshIndicator(
+          onRefresh: () => getProfilePosts(),
+          child: buildProfilePosts(),
+        ),
       ),
     );
   }

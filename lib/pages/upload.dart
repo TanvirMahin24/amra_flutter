@@ -20,7 +20,7 @@ class Upload extends StatefulWidget {
   _UploadState createState() => _UploadState();
 }
 
-class _UploadState extends State<Upload> {
+class _UploadState extends State<Upload> with AutomaticKeepAliveClientMixin {
   late File? imageFile = null;
   bool isUploading = false;
   String postId = Uuid().v4();
@@ -133,7 +133,7 @@ class _UploadState extends State<Upload> {
       {required String mediaUrl,
       required String location,
       required String description}) async {
-    print(widget.currentUser!.id);
+    //print(widget.currentUser!.id);
     postsRef
         // .doc(widget.currentUser!.id)
         // .collection('userPosts')
@@ -294,7 +294,7 @@ class _UploadState extends State<Upload> {
       // Location services are not enabled don't continue
       // accessing the position and request users of the
       // App to enable the location services.
-      print('Location services are disabled.');
+      // print('Location services are disabled.');
     }
 
     permission = await Geolocator.checkPermission();
@@ -306,14 +306,14 @@ class _UploadState extends State<Upload> {
         // Android's shouldShowRequestPermissionRationale
         // returned true. According to Android guidelines
         // your App should show an explanatory UI now.
-        return print('Location permissions are denied');
+        return; //print('Location permissions are denied');
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
-      print(
-          'Location permissions are permanently denied, we cannot request permissions.');
+      //print(
+      //'Location permissions are permanently denied, we cannot request permissions.');
     }
 
     Position pos = await Geolocator.getCurrentPosition(
@@ -325,8 +325,10 @@ class _UploadState extends State<Upload> {
     locationController.text = locationFinal;
   }
 
+  bool get wantKeepAlive => true;
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return imageFile == null ? buildSplashScreen() : buildUploadForm();
   }
 }

@@ -53,7 +53,7 @@ class _HomeState extends State<Home> {
         });
       }
     }, onError: (err) {
-      print('ERROR SIGINING IN : $err');
+      //print('ERROR SIGINING IN : $err');
     });
 
     //LOGIN
@@ -70,7 +70,7 @@ class _HomeState extends State<Home> {
         });
       }
     }).catchError((err) {
-      print('ERROR LOGIN : $err');
+      // print('ERROR LOGIN : $err');
     });
   }
 
