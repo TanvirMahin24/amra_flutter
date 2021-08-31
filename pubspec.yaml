@@ -31,10 +31,10 @@ dependencies:
     sdk: flutter
   cloud_firestore:
   image_picker: ^0.8.3+2
-  firebase_storage: ^10.0.2
-  firebase_auth: ^3.0.2
-  firebase_core:
-  google_sign_in: ^5.0.7
+  firebase_storage:
+  firebase_auth: ^0.20.0+1
+  google_sign_in: ^4.5.9
+  firebase_core: ^0.7.0
   geolocator:
   geocoding:
   uuid: ^3.0.4
