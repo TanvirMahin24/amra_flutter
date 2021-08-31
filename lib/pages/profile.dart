@@ -73,8 +73,9 @@ class _ProfileState extends State<Profile> {
       isLoading = true;
     });
     var snapshot = await postsRef
-        .doc(widget.profileId)
-        .collection('userPosts')
+        // .doc(widget.profileId)
+        // .collection('userPosts')
+        .where('userId', isEqualTo: widget.profileId)
         .orderBy('timestamp', descending: true)
         .get();
     setState(() {

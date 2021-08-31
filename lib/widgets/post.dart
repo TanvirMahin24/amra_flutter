@@ -129,11 +129,7 @@ class _PostState extends State<Post> {
     bool isLiked = likes[currentUserId] == true;
 
     if (isLiked) {
-      await postsRef
-          .doc(ownerId)
-          .collection('userPosts')
-          .doc(postId)
-          .update({'likes.$currentUserId': false});
+      await postsRef.doc(postId).update({'likes.$currentUserId': false});
       removeLikeToActivityFeed();
       setState(() {
         likeCount--;
@@ -141,11 +137,7 @@ class _PostState extends State<Post> {
         likes[currentUserId] = false;
       });
     } else if (!isLiked) {
-      await postsRef
-          .doc(ownerId)
-          .collection('userPosts')
-          .doc(postId)
-          .update({'likes.$currentUserId': true});
+      await postsRef.doc(postId).update({'likes.$currentUserId': true});
       addLikeToActivityFeed();
       setState(() {
         likeCount++;

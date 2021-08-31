@@ -135,8 +135,8 @@ class _UploadState extends State<Upload> {
       required String description}) async {
     print(widget.currentUser!.id);
     postsRef
-        .doc(widget.currentUser!.id)
-        .collection('userPosts')
+        // .doc(widget.currentUser!.id)
+        // .collection('userPosts')
         .doc(postId)
         .set({
       "userId": widget.currentUser!.id,
