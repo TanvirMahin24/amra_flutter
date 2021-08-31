@@ -1,4 +1,6 @@
 import 'package:amra/pages/home.dart';
+import 'package:amra/pages/post_screen.dart';
+import 'package:amra/pages/profile.dart';
 import 'package:amra/widgets/header.dart';
 import 'package:amra/widgets/progress.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -32,7 +34,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
         .orderBy('timestamp', descending: true)
         .limit(50)
         .get();
-    print('CALLL DONE:::::::::::::::::::::::::');
+    //print('CALLL DONE:::::::::::::::::::::::::');
     setState(() {
       isLoading = false;
       activities = snapshot.docs
@@ -43,12 +45,12 @@ class _ActivityFeedState extends State<ActivityFeed> {
 
   buildActivities() {
     if (isLoading) {
-      print('Loading :::::::::::::::: $isLoading');
+      //print('Loading :::::::::::::::: $isLoading');
       return circularProgress();
     } else if (activities.isEmpty) {
       return Center(
         child: Text(
-          "No Posts Found",
+          "No Notifications",
           style: TextStyle(
             color: Colors.red[100],
             fontFamily: 'Signatra',
@@ -153,10 +155,10 @@ class ActivityFeedItem extends StatelessWidget {
     );
   }
 
-  configMediaPerview() {
+  configMediaPerview(context) {
     if (type == 'like' || type == 'comment') {
       mediaPreview = GestureDetector(
-        onTap: () => print('click'),
+        onTap: () => showPost(context),
         child: Container(
           height: 50,
           width: 50,
@@ -187,15 +189,24 @@ class ActivityFeedItem extends StatelessWidget {
     }
   }
 
+  showPost(context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PostScreen(postId: postId, userId: userId),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    configMediaPerview();
+    configMediaPerview(context);
     return Container(
       margin: EdgeInsets.only(bottom: 5),
       color: Colors.red.withOpacity(.1),
       child: ListTile(
         title: GestureDetector(
-          onTap: () {},
+          onTap: () => showProfile(context, profileId: userId),
           child: RichText(
             text: TextSpan(
                 style: TextStyle(
@@ -227,4 +238,15 @@ class ActivityFeedItem extends StatelessWidget {
       ),
     );
   }
+}
+
+showProfile(BuildContext context, {required String profileId}) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => Profile(
+        profileId: profileId,
+      ),
+    ),
+  );
 }

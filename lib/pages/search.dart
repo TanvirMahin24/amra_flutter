@@ -1,4 +1,5 @@
 import 'package:amra/models/user.dart';
+import 'package:amra/pages/activity_feed.dart';
 import 'package:amra/pages/home.dart';
 import 'package:amra/widgets/progress.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -120,7 +121,7 @@ class UserResult extends StatelessWidget {
       child: Column(
         children: [
           GestureDetector(
-            onTap: () {},
+            onTap: () => showProfile(context, profileId: user.id),
             child: ListTile(
               leading: CircleAvatar(
                 radius: 30,

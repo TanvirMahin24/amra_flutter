@@ -11,6 +11,7 @@ AppBar header(context,
               ? title
               : 'Profile',
       style: TextStyle(
+        overflow: TextOverflow.ellipsis,
         fontFamily: 'Signatra',
         color: Colors.white,
         fontSize: isAppTitle ? 40 : 30,

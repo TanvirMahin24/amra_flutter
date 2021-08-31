@@ -95,6 +95,8 @@ class _ProfileState extends State<Profile> {
     bool isOwner = currentUserId == widget.profileId;
     if (isOwner) {
       return buildButton(text: "Edit Profile", func: editProfile);
+    } else {
+      return Text("Follow and Unfollow");
     }
   }
 

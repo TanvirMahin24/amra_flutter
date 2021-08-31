@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:amra/models/user.dart';
+import 'package:amra/pages/activity_feed.dart';
 import 'package:amra/pages/comments.dart';
 import 'package:amra/pages/home.dart';
 import 'package:amra/widgets/custom_image.dart';
@@ -105,7 +106,7 @@ class _PostState extends State<Post> {
               backgroundColor: Colors.grey,
             ),
             title: GestureDetector(
-              onTap: () {},
+              onTap: () => showProfile(context, profileId: user.id),
               child: Text(
                 user.username,
                 style: TextStyle(
