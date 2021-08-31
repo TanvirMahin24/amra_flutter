@@ -114,24 +114,24 @@ late Widget mediaPreview;
 late String activityTitleText;
 
 class ActivityFeedItem extends StatelessWidget {
-  late final String username;
-  late final String mediaUrl;
-  late final String userId;
-  late final String type;
-  late final String postId;
-  late final String userProfileImg;
-  late final Timestamp timestamp;
-  late final String text;
+  late final String? username;
+  late final String? mediaUrl;
+  late final String? userId;
+  late final String? type;
+  late final String? postId;
+  late final String? userProfileImg;
+  late final Timestamp? timestamp;
+  late final String? text;
 
   ActivityFeedItem({
-    required this.username,
-    required this.mediaUrl,
-    required this.userId,
-    required this.type,
-    required this.postId,
-    required this.userProfileImg,
-    required this.timestamp,
-    required this.text,
+    this.username,
+    this.mediaUrl,
+    this.userId,
+    this.type,
+    this.postId,
+    this.userProfileImg,
+    this.timestamp,
+    this.text,
   });
 
   factory ActivityFeedItem.fromDocument(DocumentSnapshot doc) {
@@ -168,7 +168,7 @@ class ActivityFeedItem extends StatelessWidget {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: CachedNetworkImageProvider(mediaUrl),
+                  image: CachedNetworkImageProvider(mediaUrl!),
                 ),
               ),
             ),
@@ -193,7 +193,7 @@ class ActivityFeedItem extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PostScreen(postId: postId, userId: userId),
+        builder: (context) => PostScreen(postId: postId!, userId: userId!),
       ),
     );
   }
@@ -206,7 +206,7 @@ class ActivityFeedItem extends StatelessWidget {
       color: Colors.red.withOpacity(.1),
       child: ListTile(
         title: GestureDetector(
-          onTap: () => showProfile(context, profileId: userId),
+          onTap: () => showProfile(context, profileId: userId!),
           child: RichText(
             text: TextSpan(
                 style: TextStyle(
@@ -228,10 +228,10 @@ class ActivityFeedItem extends StatelessWidget {
           ),
         ),
         leading: CircleAvatar(
-          backgroundImage: CachedNetworkImageProvider(userProfileImg),
+          backgroundImage: CachedNetworkImageProvider(userProfileImg!),
         ),
         subtitle: Text(
-          timeago.format(timestamp.toDate()),
+          timeago.format(timestamp!.toDate()),
           overflow: TextOverflow.ellipsis,
         ),
         trailing: mediaPreview,
