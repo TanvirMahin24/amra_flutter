@@ -170,6 +170,7 @@ class _PostState extends State<Post> {
         "postId": postId,
         "mediaUrl": mediaUrl,
         "timestamp": DateTime.now(),
+        "text": "",
       });
     }
   }

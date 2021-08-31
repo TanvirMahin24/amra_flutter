@@ -12,20 +12,73 @@ class ActivityFeed extends StatefulWidget {
 }
 
 class _ActivityFeedState extends State<ActivityFeed> {
-  Future getActivityFeedData() async {
-    QuerySnapshot snapshot = await activityFeedRef
-        .doc(currentUser!.id)
+  final String currentUserId = currentUser!.id;
+  bool isLoading = false;
+  List<ActivityFeedItem> activities = [];
+  @override
+  initState() {
+    super.initState();
+    getActivityData();
+    //print(currentUserId);
+  }
+
+  getActivityData() async {
+    setState(() {
+      isLoading = true;
+    });
+    var snapshot = await activityFeedRef
+        .doc(currentUserId)
         .collection('feedItems')
         .orderBy('timestamp', descending: true)
         .limit(50)
         .get();
-
-    List<ActivityFeedItem> feeds = [];
-    feeds = snapshot.docs.map((element) {
-      return ActivityFeedItem.fromDocument(element);
-    }).toList();
-    return feeds;
+    print('CALLL DONE:::::::::::::::::::::::::');
+    setState(() {
+      isLoading = false;
+      activities = snapshot.docs
+          .map((doc) => ActivityFeedItem.fromDocument(doc))
+          .toList();
+    });
   }
+
+  buildActivities() {
+    if (isLoading) {
+      print('Loading :::::::::::::::: $isLoading');
+      return circularProgress();
+    } else if (activities.isEmpty) {
+      return Center(
+        child: Text(
+          "No Posts Found",
+          style: TextStyle(
+            color: Colors.red[100],
+            fontFamily: 'Signatra',
+            fontSize: 48,
+          ),
+        ),
+      );
+    } else {
+      return ListView(
+        children: activities,
+      );
+    }
+  }
+
+  // Future getActivityFeedData() async {
+  //   var snapshot = await activityFeedRef
+  //       .doc(currentUser!.id)
+  //       .collection('feedItems')
+  //       .orderBy('timestamp', descending: true)
+  //       .limit(50)
+  //       .get();
+
+  //   List<ActivityFeedItem> feeds = [];
+  //   feeds = (snapshot.docs
+  //         ..forEach((QueryDocumentSnapshot element) {
+  //           feeds.add(ActivityFeedItem.fromDocument(element));
+  //         }))
+  //       .cast<ActivityFeedItem>();
+  //   return feeds;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -35,18 +88,21 @@ class _ActivityFeedState extends State<ActivityFeed> {
         title: "Notification",
         isAppTitle: false,
       ),
+      // body: Container(
+      //   child: FutureBuilder(
+      //     builder: (context, snapshot) {
+      //       if (!snapshot.hasData) {
+      //         return circularProgress();
+      //       }
+      //       return ListView(
+      //         children: snapshot.data as List<ActivityFeedItem>,
+      //       );
+      //     },
+      //     future: getActivityFeedData(),
+      //   ),
+      // ),
       body: Container(
-        child: FutureBuilder(
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return circularProgress();
-            }
-            return ListView(
-              children: snapshot.data as List<ActivityFeedItem>,
-            );
-          },
-          future: getActivityFeedData(),
-        ),
+        child: buildActivities(),
       ),
     );
   }
@@ -78,14 +134,23 @@ class ActivityFeedItem extends StatelessWidget {
 
   factory ActivityFeedItem.fromDocument(DocumentSnapshot doc) {
     return ActivityFeedItem(
-        username: doc['username'],
-        mediaUrl: doc['mediaUrl'],
-        userId: doc['userId'],
-        type: doc['type'],
-        postId: doc['postId'],
-        userProfileImg: doc['userProfileImg'],
-        timestamp: doc['timestamp'],
-        text: doc['text']);
+      // username: doc['username'],
+      // mediaUrl: doc['mediaUrl'],
+      // userId: doc['userId'],
+      // type: doc['type'],
+      // postId: doc['postId'],
+      // userProfileImg: doc['userProfileImg'],
+      // timestamp: doc['timestamp'],
+      // text: doc['text']);
+      username: doc.get('username'),
+      mediaUrl: doc.get('mediaUrl'),
+      userId: doc.get('userId'),
+      type: doc.get('type'),
+      postId: doc.get('postId'),
+      userProfileImg: doc.get('userProfileImg'),
+      timestamp: doc.get('timestamp'),
+      text: doc.get('text'),
+    );
   }
 
   configMediaPerview() {
@@ -125,42 +190,40 @@ class ActivityFeedItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     configMediaPerview();
-    return Padding(
-      padding: EdgeInsets.only(bottom: 2),
-      child: Container(
-        color: Colors.red.withOpacity(.2),
-        child: ListTile(
-          title: GestureDetector(
-            onTap: () {},
-            child: RichText(
-              text: TextSpan(
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black,
+    return Container(
+      margin: EdgeInsets.only(bottom: 5),
+      color: Colors.red.withOpacity(.1),
+      child: ListTile(
+        title: GestureDetector(
+          onTap: () {},
+          child: RichText(
+            text: TextSpan(
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+                children: [
+                  TextSpan(
+                    text: username,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  children: [
-                    TextSpan(
-                      text: username,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    TextSpan(
-                      text: ' $activityTitleText',
-                    ),
-                  ]),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          leading: CircleAvatar(
-            backgroundImage: CachedNetworkImageProvider(userProfileImg),
-          ),
-          subtitle: Text(
-            timeago.format(timestamp.toDate()),
+                  TextSpan(
+                    text: ' $activityTitleText',
+                  ),
+                ]),
             overflow: TextOverflow.ellipsis,
           ),
-          trailing: mediaPreview,
         ),
+        leading: CircleAvatar(
+          backgroundImage: CachedNetworkImageProvider(userProfileImg),
+        ),
+        subtitle: Text(
+          timeago.format(timestamp.toDate()),
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: mediaPreview,
       ),
     );
   }
