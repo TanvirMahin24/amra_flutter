@@ -163,11 +163,11 @@ class _UploadState extends State<Upload> with AutomaticKeepAliveClientMixin {
         description: captionController.text);
     captionController.clear();
     locationController.clear();
+    var newId = Uuid().v4();
     setState(() {
       imageFile = null;
       isUploading = false;
-      postId:
-      Uuid().v4();
+      postId = newId;
     });
   }
 

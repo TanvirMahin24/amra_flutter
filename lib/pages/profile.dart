@@ -10,6 +10,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../widgets/post.dart';
+
 class Profile extends StatefulWidget {
   late final String profileId;
 
@@ -205,9 +207,9 @@ class _ProfileState extends State<Profile> {
 
     //Add notification to profile owner
     await activityFeedRef
-        .doc(currentUserId)
-        .collection('feedItems')
         .doc(widget.profileId)
+        .collection('feedItems')
+        .doc(currentUserId)
         .set({
       "type": "follow",
       "text": "",
