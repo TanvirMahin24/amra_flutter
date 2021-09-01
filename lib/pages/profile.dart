@@ -185,33 +185,34 @@ class _ProfileState extends State<Profile> {
     });
   }
 
-  followFunc() {
+  followFunc() async {
     setState(() {
       isFollowing = true;
     });
     //Adding follower to profile owner
-    followersRef
+    await followersRef
         .doc(widget.profileId)
         .collection('userFollowers')
         .doc(currentUserId)
         .set({});
 
     //Adding following to current user
-    followingRef
+    await followingRef
         .doc(currentUserId)
         .collection('userFollowing')
         .doc(widget.profileId)
         .set({});
 
     //Add notification to profile owner
-    activityFeedRef
-        .doc(widget.profileId)
-        .collection('feedItems')
+    await activityFeedRef
         .doc(currentUserId)
+        .collection('feedItems')
+        .doc(widget.profileId)
         .set({
       "type": "follow",
       "text": "",
-      "ownerId": widget.profileId,
+      "postId": "",
+      "mediaUrl": "",
       "username": currentUser!.username,
       "userId": currentUserId,
       "userProfileImg": currentUser!.photoUrl,

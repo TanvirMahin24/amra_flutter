@@ -151,7 +151,7 @@ class ActivityFeedItem extends StatelessWidget {
       postId: doc.get('postId'),
       userProfileImg: doc.get('userProfileImg'),
       timestamp: doc.get('timestamp'),
-      text: doc.get('text'),
+      text: doc.get('text').toString(),
     );
   }
 
