@@ -76,16 +76,6 @@ class _TimelineState extends State<Timeline> {
                   ),
                 ),
               ),
-              Center(
-                child: Text(
-                  "Try sharing your day",
-                  style: TextStyle(
-                    color: Colors.red[100],
-                    fontFamily: 'Signatra',
-                    fontSize: 28,
-                  ),
-                ),
-              ),
             ],
           ));
     } else {
@@ -93,8 +83,11 @@ class _TimelineState extends State<Timeline> {
         children: [
           Container(
             alignment: Alignment.topCenter,
-            child: Row(
-              children: [...users],
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [...users],
+              ),
             ),
           ),
           Divider(),

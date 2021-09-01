@@ -155,7 +155,7 @@ class UserAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 100,
+      width: MediaQuery.of(context).size.width / 4,
       child: Column(
         children: [
           GestureDetector(

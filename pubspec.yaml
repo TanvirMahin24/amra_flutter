@@ -32,16 +32,16 @@ dependencies:
   cloud_firestore:
   image_picker: ^0.8.3+2
   firebase_storage:
-  firebase_auth: ^0.20.0+1
-  google_sign_in: ^4.5.9
-  firebase_core: ^0.7.0
+  firebase_auth:
+  google_sign_in:
+  firebase_core:
   geolocator:
   geocoding:
   uuid: ^3.0.4
   image: ^3.0.2
   animator: ^3.1.0
   path_provider: ^2.0.2
-  firebase_messaging: ^10.0.5
+  firebase_messaging:
   timeago: ^3.1.0
   cached_network_image:
   flutter_svg:
